@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Carte des établissemnt école primaires</title>
+  <meta charset="utf-8">
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"
+   integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ=="
+   crossorigin=""/>
+  
+  <!-- Make sure you put this AFTER Leaflet's CSS -->
+  <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
+
+  <style type="text/css">
+   #mapid { 
+    height: 750px;
+  </style>
+
+</head>
+<body>
+
+<div id="mapid"></div>
+
+<script type="text/javascript">
+var map = L.map('mapid').setView([48.866667, 2.333333], 12);
+
+L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+let long;
+let lat;
+let desc="Bonjour je suis une pop up";
+
+
+
+function drawPopup(long,lat,desc){
+
+    marker = L.marker([long,lat]).addTo(map);
+    marker.bindPopup(desc).openPopup();
+   
+  }
+
+function   drawData(){
+
+  var requetehtml = new XMLHttpRequest();
+  requetehtml.onreadystatechange=function(){
+
+    if (requetehtml.readyState==4  && requetehtml.status==200 ){
+      //alert("La requete est prête");
+        
+        // on parse le set de données qu'on récupere  
+        let data  =  JSON.parse(this.responseText);
+        console.clear();
+        console.log(data);
+        let i;
+        for( i   in data.records)   
+        {
+          var addr=data.records[i].fields.adresse;
+          var lat=data.records[i].geometry.coordinates[0];
+          var long=data.records[i].geometry.coordinates[1];
+          drawPopup(long,lat,addr);
+        }
+         console.log("Les points ont chargés");
+      };      
+ 
+ }
+requetehtml.open("GET","https://opendata.paris.fr/api/records/1.0/search/?dataset=etablissements-scolaires",true)
+requetehtml.send();
+ }
+
+
+
+//L.marker([-35, 30]).addTo(map).bindPopup('A pretty CSS3 popup.<br> Easily customizable.').openPopup();
+</script>
+<button onclick="drawPopup(48.866667, 2.333333,desc)">LOAD TEST</button>
+<button onclick="drawData()">LOAD DATA</button>
+</body>
+</html>
