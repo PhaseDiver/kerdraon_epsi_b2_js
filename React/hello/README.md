@@ -10,7 +10,7 @@ Rentrez cette adresse dans votre navigateur
 visualiser votre application .
 
 Cette page se rechage en continu
-De plus erreurs serotn affichés dans votre prompteur
+De plus erreurs seront affichés dans votre prompteur
 
 
 Il existe une arboresence spécifique à react.  Vos fichiers à éditer se 
